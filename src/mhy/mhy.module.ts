@@ -4,6 +4,7 @@ import { MhyService } from './mhy.service';
 
 @Module({
   controllers: [MhyController],
-  providers: [MhyService]
+  providers: [MhyService],
+  exports: [MhyService],
 })
 export class MhyModule {}

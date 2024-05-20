@@ -1,12 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
+import { MhyService } from 'src/mhy/mhy.service';
 
 @Injectable()
 export class CronService {
   private readonly logger = new Logger(CronService.name);
   //   注入 SchedulerRegistry
-  constructor(private schedulerRegistry: SchedulerRegistry) {}
+  constructor(
+    private schedulerRegistry: SchedulerRegistry,
+    private a: MhyService,
+  ) {}
 
   // 生命周期函数
   onModuleInit() {
@@ -30,13 +34,13 @@ export class CronService {
   }
 
   addCronJob(name: string, cronTime: string) {
-    const job = new CronJob(cronTime, () => {
+    const job = new CronJob(cronTime, async () => {
       this.logger.warn(`job ${name} is running!`);
+      await this.a.getTheLatestPostOnTheOfficialAccountOfMiyouClub();
     });
 
     this.schedulerRegistry.addCronJob(name, job);
     job.start();
-
     this.logger.warn(`job ${name} added for ${cronTime} !`);
   }
 
