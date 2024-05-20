@@ -40,7 +40,7 @@ export class CronService {
     });
 
     this.schedulerRegistry.addCronJob(name, job);
-    job.start();
+    // job.start();
     this.logger.warn(`job ${name} added for ${cronTime} !`);
   }
 

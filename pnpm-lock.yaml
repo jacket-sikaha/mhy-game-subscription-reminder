@@ -11,6 +11,9 @@ dependencies:
   '@nestjs/core':
     specifier: ^10.0.0
     version: 10.3.8(@nestjs/common@10.3.8)(@nestjs/platform-express@10.3.8)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+  '@nestjs/devtools-integration':
+    specifier: ^0.1.6
+    version: 0.1.6(@nestjs/common@10.3.8)(@nestjs/core@10.3.8)
   '@nestjs/platform-express':
     specifier: ^10.0.0
     version: 10.3.8(@nestjs/common@10.3.8)(@nestjs/core@10.3.8)
@@ -936,6 +939,20 @@ packages:
       uid: 2.0.2
     transitivePeerDependencies:
       - encoding
+
+  /@nestjs/devtools-integration@0.1.6(@nestjs/common@10.3.8)(@nestjs/core@10.3.8):
+    resolution: {integrity: sha512-7v2Oa7g2zxYB2DfRz5RsRyNOlrbPc32NG3FowyI3nGCOWtNaRAuZtAx7LjdnIphQGXDuIgVNMLROQaKpxI1eWg==}
+    peerDependencies:
+      '@nestjs/common': ^9.3.7 || ^10.0.0
+      '@nestjs/core': ^9.3.7 || ^10.0.0
+    dependencies:
+      '@nestjs/common': 10.3.8(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      '@nestjs/core': 10.3.8(@nestjs/common@10.3.8)(@nestjs/platform-express@10.3.8)(reflect-metadata@0.2.2)(rxjs@7.8.1)
+      chalk: 4.1.2
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /@nestjs/platform-express@10.3.8(@nestjs/common@10.3.8)(@nestjs/core@10.3.8):
     resolution: {integrity: sha512-sifLoxgEJvAgbim1UuW6wyScMfkS9SVQRH+lN33N/9ZvZSjO6NSDLOe+wxqsnZkia+QrjFC0qy0ITRAsggfqbg==}
