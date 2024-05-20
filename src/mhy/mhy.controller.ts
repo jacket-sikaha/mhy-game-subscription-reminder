@@ -5,16 +5,6 @@ import { MhyService } from './mhy.service';
 export class MhyController {
   constructor(private readonly mhyService: MhyService) {}
 
-  @Get('a')
-  test() {
-    return this.mhyService.setIsChanged();
-  }
-
-  @Get('b')
-  test1() {
-    return this.mhyService.getIsChanged();
-  }
-
   @Get('getLatestPost')
   async getLatestPost() {
     const res =

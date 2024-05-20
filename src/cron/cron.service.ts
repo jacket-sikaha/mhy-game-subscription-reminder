@@ -9,7 +9,7 @@ export class CronService {
   //   注入 SchedulerRegistry
   constructor(
     private schedulerRegistry: SchedulerRegistry,
-    private a: MhyService,
+    private mhyService: MhyService,
   ) {}
 
   // 生命周期函数
@@ -36,7 +36,7 @@ export class CronService {
   addCronJob(name: string, cronTime: string) {
     const job = new CronJob(cronTime, async () => {
       this.logger.warn(`job ${name} is running!`);
-      await this.a.getTheLatestPostOnTheOfficialAccountOfMiyouClub();
+      await this.mhyService.getTheLatestPostOnTheOfficialAccountOfMiyouClub();
     });
 
     this.schedulerRegistry.addCronJob(name, job);

@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { CronService } from './cron.service';
 import { MhyService } from 'src/mhy/mhy.service';
 
@@ -8,16 +8,6 @@ export class CronController {
     private readonly cronService: CronService,
     private mhyService: MhyService,
   ) {}
-
-  @Get('a')
-  test() {
-    return this.mhyService.setIsChanged();
-  }
-
-  @Get('b')
-  test1() {
-    return this.mhyService.getIsChanged();
-  }
 
   @Post('startCron')
   startCron() {
