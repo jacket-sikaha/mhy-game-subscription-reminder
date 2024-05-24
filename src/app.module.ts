@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { MhyModule } from './mhy/mhy.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CronModule } from './cron/cron.module';
+import { DingdingModule } from './dingding/dingding.module';
 
 @Module({
   // 激活作业调度
@@ -19,6 +20,7 @@ import { CronModule } from './cron/cron.module';
       port: 1111,
     }),
     CronModule,
+    DingdingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
