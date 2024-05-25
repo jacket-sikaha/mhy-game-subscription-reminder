@@ -1,14 +1,13 @@
-import { Controller, Post } from '@nestjs/common';
+import { Controller, Post } from "@nestjs/common";
 
-@Controller('dingding')
+@Controller("dingding")
 export class DingdingController {
-  @Post('sendDiyGroupMsg')
+  constructor(private readonly dingdingService: DingdingService) {}
+
+  @Post("sendDiyGroupMsg")
   async sendDiyGroupMsg() {
     try {
-      await fetch(
-        `https://oapi.dingtalk.com/robot/send?access_token=${1}&timestamp=${1}&sign=${1}`,
-        { method: 'POST', body: JSON.stringify('') },
-      );
+      await this.dingdingService.sendDiyGroupMsg();
     } catch (error) {
       console.error(error);
     }
