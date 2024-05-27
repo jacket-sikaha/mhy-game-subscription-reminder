@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
-import dayjs from 'dayjs';
+import { DingdingService } from 'src/dingding/dingding.service';
 import { MhyService } from 'src/mhy/mhy.service';
 
 @Injectable()
@@ -11,6 +11,7 @@ export class CronService {
   constructor(
     private schedulerRegistry: SchedulerRegistry,
     private mhyService: MhyService,
+    private dingdingService: DingdingService,
   ) {}
 
   // 生命周期函数
@@ -20,7 +21,7 @@ export class CronService {
   onApplicationBootstrap() {
     console.log(`The module has been onApplicationBootstrap.`);
     // 自定义cron需要module初始化完成才开始配置
-    this.addCronJob('activity', '*/3 * * * * *');
+    this.addCronJob('activity', '*/15 * * * * *');
   }
 
   // 声明式cron
@@ -30,20 +31,17 @@ export class CronService {
   //     timeZone: 'Europe/Paris',
   //   })
   async handleCron() {
-    const posts =
-      await this.mhyService.getTheLatestPostOnTheOfficialAccountOfMiyouClub();
-    const target = posts.find(({ subject, created_at, images, content }) => {
-      return subject.includes('前瞻特别节目'); // 前瞻特别节目预告
-    });
-    const postTime = dayjs(target.created_at);
-    const liveTime = postTime.add(2, 'day');
-    console.log('target', target.subject);
-    return target;
+    console.log('result', Date.now());
   }
 
   addCronJob(name: string, cronTime: string) {
     const job = new CronJob(cronTime, async () => {
-      await this.handleCron();
+      try {
+        const result = await this.dingdingService.sendDiyGroupMsg();
+        console.log('result', result);
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     this.schedulerRegistry.addCronJob(name, job);

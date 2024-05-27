@@ -1,10 +1,11 @@
-import { Controller, Post } from "@nestjs/common";
+import { Controller, Post } from '@nestjs/common';
+import { DingdingService } from './dingding.service';
 
-@Controller("dingding")
+@Controller('dingding')
 export class DingdingController {
   constructor(private readonly dingdingService: DingdingService) {}
 
-  @Post("sendDiyGroupMsg")
+  @Post('sendDiyGroupMsg')
   async sendDiyGroupMsg() {
     try {
       await this.dingdingService.sendDiyGroupMsg();

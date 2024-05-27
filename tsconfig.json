@@ -5,7 +5,8 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
+    // "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true, // 支持 esModule 写法
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
