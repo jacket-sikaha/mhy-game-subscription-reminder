@@ -1,7 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
+import dayjs from 'dayjs';
 import { DingdingService } from 'src/dingding/dingding.service';
+import { GameType } from 'src/mhy/interfaces/game-type';
 import { MhyService } from 'src/mhy/mhy.service';
 
 @Injectable()
@@ -19,7 +21,10 @@ export class CronService {
     console.log(`The module has been initialized.`);
   }
   onApplicationBootstrap() {
-    console.log(`The module has been onApplicationBootstrap.`);
+    console.log(
+      `The module has been onApplicationBootstrap.`,
+      dayjs().format(),
+    );
     // 自定义cron需要module初始化完成才开始配置
     this.addCronJob('activity', '*/15 * * * * *');
   }
@@ -37,7 +42,11 @@ export class CronService {
   addCronJob(name: string, cronTime: string) {
     const job = new CronJob(cronTime, async () => {
       try {
-        const result = await this.dingdingService.sendDiyGroupMsg();
+        const result = await Promise.all(
+          [GameType.Genshin, GameType.StarRail].map((item) =>
+            this.dingdingService.sendDiyGroupMsg(item),
+          ),
+        );
         console.log('result', result);
       } catch (error) {
         console.error(error);

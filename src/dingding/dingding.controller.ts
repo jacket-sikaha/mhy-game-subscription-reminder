@@ -8,7 +8,7 @@ export class DingdingController {
   @Post('sendDiyGroupMsg')
   async sendDiyGroupMsg() {
     try {
-      await this.dingdingService.sendDiyGroupMsg();
+      await this.dingdingService.sendDiyGroupMsg(2);
     } catch (error) {
       console.error(error);
     }

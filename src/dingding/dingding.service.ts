@@ -8,20 +8,33 @@ import {
   MsgResponsive,
   StructuredContent,
 } from './interfaces/msg-body';
+import { GameType } from 'src/mhy/interfaces/game-type';
 
 @Injectable()
 export class DingdingService {
   constructor(private mhyService: MhyService) {}
 
-  async sendDiyGroupMsg() {
-    const data =
-      await this.mhyService.getTheLatestPostOnTheOfficialAccountOfMiyouClub();
-    const post = this.mhyService.getPreviewBroadcastData(data);
-    let body: any;
-    if (post && this.mhyService.isRecentPreviewBroadcast(post)) {
-      body = this.prepareMsgBodyByMarddown(post, true);
+  async sendDiyGroupMsg(type: GameType) {
+    let data: Post[];
+    switch (type) {
+      case GameType.Genshin:
+        data =
+          await this.mhyService.getTheLatestPostOnTheOfficialAccountOfGenshin();
+        break;
+      case GameType.StarRail:
+        data =
+          await this.mhyService.getTheLatestPostOnTheOfficialAccountOfStarRail();
+        break;
+      default:
+        return;
     }
-    body = this.prepareMsgBodyByMarddown(post, false);
+    const post = this.mhyService.getPreviewBroadcastData(data);
+    let body: MsgBody;
+    if (post && this.mhyService.isRecentPreviewBroadcast(post)) {
+      body = this.prepareMsgBodyByMarddown(post);
+    } else {
+      body = this.prepareMsgBodyByMarddown(data);
+    }
     const { sign, timestamp } = this.getSign();
     const res = await fetch(
       `https://oapi.dingtalk.com/robot/send?access_token=${'dee451641816c0729c6d76b407010b3bf29baf1fe193fb9b0e570632458e0af8'}&timestamp=${timestamp}&sign=${sign}`,
@@ -31,6 +44,7 @@ export class DingdingService {
         headers: { 'Content-Type': 'application/json' },
       },
     );
+    // console.log('body', body);
     const msgResponsive: MsgResponsive = await res.json();
     if (msgResponsive.errcode === '0' || msgResponsive.errmsg === 'ok') {
       return msgResponsive;
@@ -38,10 +52,18 @@ export class DingdingService {
     return Promise.reject(msgResponsive);
   }
 
-  prepareMsgBodyByMarddown(
-    { subject, structured_content, created_at }: Post,
-    isRecentPreviewBroadcast = false,
-  ): MsgBody {
+  prepareMsgBodyByMarddown(data: Post | Post[]): MsgBody {
+    if (Array.isArray(data)) {
+      const content = data.map(({ subject }) => `- ${subject}`).join('\n');
+      return {
+        msgtype: 'markdown',
+        markdown: {
+          title: '资讯信息',
+          text: `# 资讯信息\n ${content}`,
+        },
+      };
+    }
+    const { subject, structured_content, created_at } = data;
     const contents: StructuredContent[] = JSON.parse(structured_content);
     const content = contents.reduce((pre: string, cur) => {
       const { insert, attributes } = cur;
@@ -54,27 +76,20 @@ export class DingdingService {
       }
       return pre;
     }, '');
-    const postDate = dayjs(created_at).format('YYYY-MM-DD HH:mm:ss');
-    const endDate = dayjs(created_at)
+
+    const postDate = dayjs.unix(created_at).format('YYYY-MM-DD HH:mm:ss');
+    const endDate = dayjs
+      .unix(created_at)
       .add(2, 'day')
       .format('YYYY-MM-DD HH:mm:ss');
-    return isRecentPreviewBroadcast
-      ? {
-          msgtype: 'markdown',
-          markdown: {
-            title: `重要活动提醒---${subject}`,
-            text: `# 重要活动提醒
-            ### ${subject}  ${content}  \\n---\\n\\n- 发帖时间：${postDate}\\n- 大概结束时间：${endDate}\\n\\n### 记得使用兑换码！！！！！！\\n\\n---`,
-          },
-          at: { isAtAll: true },
-        }
-      : {
-          msgtype: 'markdown',
-          markdown: {
-            title: subject,
-            text: content,
-          },
-        };
+    return {
+      msgtype: 'markdown',
+      markdown: {
+        title: `重要活动提醒---${subject}`,
+        text: `# 重要活动提醒\n ### ${subject}\n${content}  \n---\n\n- 发帖时间：${postDate}\n- 大概结束时间：${endDate}\n\n### 记得使用兑换码！！！！！！\n\n---`,
+      },
+      at: { isAtAll: true },
+    };
   }
 
   getSign() {

@@ -8,7 +8,7 @@ export class MhyController {
   @Get('getLatestPost')
   async getLatestPost() {
     const res =
-      await this.mhyService.getTheLatestPostOnTheOfficialAccountOfMiyouClub();
+      await this.mhyService.getTheLatestPostOnTheOfficialAccountOfGenshin();
     return res;
   }
 }

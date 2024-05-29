@@ -1,6 +1,10 @@
-var dayjs = require('dayjs');
-var utc = require('dayjs/plugin/utc');
-var timezone = require('dayjs/plugin/timezone'); // dependent on utc plugi
+// var dayjs = require('dayjs');
+// var utc = require('dayjs/plugin/utc');
+// var timezone = require('dayjs/plugin/timezone');
+
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone'; // dependent on utc plugin
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
