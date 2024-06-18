@@ -1,6 +1,6 @@
 # Stage 1: 使用官方 Node.js 作为构建环境
 FROM node:alpine as builder
-WORKDIR /usr/src/app
+WORKDIR /project
 
 # 安装 pnpm
 RUN npm install -g pnpm
@@ -19,17 +19,17 @@ RUN pnpm build
 
 # Stage 2: 生产环境
 FROM node:alpine
-WORKDIR /usr/src/app
+WORKDIR /project
 
 # 再次安装 pnpm
 # RUN npm install -g pnpm
 
 # 复制构建结果和依赖到新的工作目录
-COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /project/dist ./dist
+COPY --from=builder /project/node_modules ./node_modules
 
 # 暴露端口
 EXPOSE 8092
 
 # 运行 NestJS 应用
-CMD ["node", "dist/main"]
+CMD ["node", "/project/dist/main"]
