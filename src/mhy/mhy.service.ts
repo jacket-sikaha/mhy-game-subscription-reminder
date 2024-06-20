@@ -36,7 +36,7 @@ export class MhyService {
 
   isRecentPreviewBroadcast(target: Post) {
     const postTime = dayjs.unix(target.created_at);
-    const liveTime = postTime.add(6, 'day');
+    const liveTime = postTime.add(2, 'day');
     const current = getShanghaiDate();
     return current.isSame(liveTime, 'day') || current.isBefore(liveTime, 'day');
   }

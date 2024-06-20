@@ -26,7 +26,7 @@ export class CronService {
       dayjs().format(),
     );
     // 自定义cron需要module初始化完成才开始配置
-    this.addCronJob('activity', '0 9,12,18 * * *');
+    this.addCronJob('activity', '0 1,4,10 * * *');
   }
 
   // 声明式cron
