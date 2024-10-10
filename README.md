@@ -5,3 +5,7 @@
 # 测试接口
 
 /dingding/sendDiyGroupMsg
+
+# 推荐vscode插件 Document This
+
+选中方法，按两下Ctrl+Alt+D触发

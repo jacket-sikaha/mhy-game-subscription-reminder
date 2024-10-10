@@ -6,6 +6,7 @@ import { MhyModule } from './mhy/mhy.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CronModule } from './cron/cron.module';
 import { DingdingModule } from './dingding/dingding.module';
+import { OcrModule } from './ocr/ocr.module';
 
 @Module({
   // 激活作业调度
@@ -19,6 +20,7 @@ import { DingdingModule } from './dingding/dingding.module';
     }),
     CronModule,
     DingdingModule,
+    OcrModule,
   ],
   controllers: [AppController],
   providers: [AppService],
