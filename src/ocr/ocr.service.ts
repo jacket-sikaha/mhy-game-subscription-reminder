@@ -42,7 +42,6 @@ export class OcrService {
       urlencoded.append('url', imageURL);
       const token = await this.getBDServiceAccessToken();
       console.log('token', token);
-      return '123';
       const tmp = await fetch(
         'https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=' +
           token,
@@ -84,7 +83,6 @@ export class OcrService {
           },
         },
       );
-      console.log('AK', process.env.BDAK);
       const res: OauthRes = await tmp.json();
       if (res.error) {
         return undefined;

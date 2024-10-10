@@ -35,14 +35,32 @@ export class MhyService {
     return target;
   }
 
-  isRecentPreviewBroadcast(target: Post) {
-    const postTime = dayjs.unix(target.created_at);
-    const liveTime = postTime.add(3, 'day');
-    const current = getShanghaiDate();
-    this.ocrService
-      .parseImageURLByBD(target.cover)
-      .then((res) => console.log(res && this.handleOCRResult(res)));
-    return current.isSame(liveTime, 'day') || current.isBefore(liveTime, 'day');
+  async isRecentPreviewBroadcast(target: Post) {
+    try {
+      const postTime = dayjs.unix(target.created_at);
+      const accurateLiveTime = await this.isThereAnyMoreAccurateTimeBYOcr(
+        target.cover,
+      );
+      const liveTime = accurateLiveTime ?? postTime.add(3, 'day');
+      const current = getShanghaiDate();
+      return (
+        current.isSame(liveTime, 'day') || current.isBefore(liveTime, 'day')
+      );
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async isThereAnyMoreAccurateTimeBYOcr(postCover: string) {
+    const res = await this.ocrService.parseImageURLByBD(postCover);
+    if (!res) return undefined;
+
+    const strArr = this.handleOCRResult(res);
+    if (!strArr) return undefined;
+    const [mon, date] = strArr;
+    return getShanghaiDate()
+      .month(+mon - 1)
+      .date(+date);
   }
 
   handleOCRResult(data: string) {
@@ -52,9 +70,11 @@ export class MhyService {
     ) {
       return null;
     }
-    console.log('data', data);
     const res = data.match(/(\d+)月(\d+)日/g);
-    return res?.[0];
+    if (!res) {
+      return null;
+    }
+    return res?.[0].split(/[^\d]/);
   }
 
   // async handleCron() {

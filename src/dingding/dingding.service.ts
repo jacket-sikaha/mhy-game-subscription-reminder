@@ -30,7 +30,7 @@ export class DingdingService {
     }
     const post = this.mhyService.getPreviewBroadcastData(data);
     let body: MsgBody;
-    if (post && this.mhyService.isRecentPreviewBroadcast(post)) {
+    if (post && (await this.mhyService.isRecentPreviewBroadcast(post))) {
       body = this.prepareMsgBodyByMarddown(post);
     } else {
       body = this.prepareMsgBodyByMarddown(data);
@@ -44,7 +44,7 @@ export class DingdingService {
         headers: { 'Content-Type': 'application/json' },
       },
     );
-    // console.log('body', body);
+    console.log('body', body);
     const msgResponsive: MsgResponsive = await res.json();
     if (msgResponsive.errcode === '0' || msgResponsive.errmsg === 'ok') {
       return msgResponsive;

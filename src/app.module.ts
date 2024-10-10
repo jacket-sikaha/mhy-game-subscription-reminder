@@ -7,11 +7,13 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { CronModule } from './cron/cron.module';
 import { DingdingModule } from './dingding/dingding.module';
 import { OcrModule } from './ocr/ocr.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   // 激活作业调度
   // 所需要加载的module全部都要在根模块进行加载
   imports: [
+    ConfigModule.forRoot(),
     MhyModule,
     ScheduleModule.forRoot(),
     DevtoolsModule.register({
