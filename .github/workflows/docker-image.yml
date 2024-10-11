@@ -31,7 +31,7 @@ jobs:
 
       - name: Print Environment Variables
         run: |
-          cat .\.env
+          cat .env
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
