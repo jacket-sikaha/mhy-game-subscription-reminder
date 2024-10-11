@@ -19,6 +19,7 @@ COPY . .
 # 复制 .env 文件到容器内部
 RUN cat .env
 
+RUN ls -a
 # 构建项目，假设所有的源代码都在 src 目录下
 RUN pnpm build
 
@@ -32,6 +33,7 @@ WORKDIR /project
 # 复制构建结果和依赖到新的工作目录
 COPY --from=builder /project/dist ./dist
 COPY --from=builder /project/node_modules ./node_modules
+RUN ls -a
 
 # 暴露端口
 EXPOSE 3000
