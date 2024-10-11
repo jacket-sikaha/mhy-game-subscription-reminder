@@ -16,6 +16,7 @@ RUN pnpm install
 # 将项目源代码复制到工作目录
 COPY . .
 
+ENV cat .env
 # 复制 .env 文件到容器内部
 RUN cat .env
 
@@ -33,6 +34,9 @@ WORKDIR /project
 # 复制构建结果和依赖到新的工作目录
 COPY --from=builder /project/dist ./dist
 COPY --from=builder /project/node_modules ./node_modules
+COPY --from=builder /project/.env ./.env
+# ENV cat .env
+
 RUN ls -a
 
 # 暴露端口
