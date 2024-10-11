@@ -2,7 +2,7 @@
 FROM node:alpine as builder
 WORKDIR /project
 
-RUN cat .env
+RUN ls -a
 
 # 安装 pnpm
 RUN npm install -g pnpm
@@ -17,7 +17,7 @@ RUN pnpm install
 COPY . .
 
 # 复制 .env 文件到容器内部
-COPY .env ./
+RUN cat .env
 
 # 构建项目，假设所有的源代码都在 src 目录下
 RUN pnpm build
