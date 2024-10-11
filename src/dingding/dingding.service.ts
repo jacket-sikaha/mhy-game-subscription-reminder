@@ -44,7 +44,7 @@ export class DingdingService {
         headers: { 'Content-Type': 'application/json' },
       },
     );
-    console.log('body', body);
+
     const msgResponsive: MsgResponsive = await res.json();
     if (msgResponsive.errcode === '0' || msgResponsive.errmsg === 'ok') {
       return msgResponsive;
@@ -80,7 +80,7 @@ export class DingdingService {
     const postDate = dayjs.unix(created_at).format('YYYY-MM-DD HH:mm:ss');
     const endDate = dayjs
       .unix(created_at)
-      .add(2, 'day')
+      .add(3, 'day')
       .format('YYYY-MM-DD HH:mm:ss');
     return {
       msgtype: 'markdown',

@@ -8,11 +8,11 @@ export class DingdingController {
   @Post('sendDiyGroupMsg')
   async sendDiyGroupMsg() {
     try {
-     const result= await this.dingdingService.sendDiyGroupMsg(2);
-      return {result}
+      const result = await this.dingdingService.sendDiyGroupMsg(2);
+      return { result };
     } catch (error) {
       console.error(error);
-      return {error}
+      return { error };
     }
   }
 }
