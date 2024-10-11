@@ -6,6 +6,16 @@
 
 /dingding/sendDiyGroupMsg
 
+body: {type:number}
+
+```ts
+// 支持type如下
+export enum GameType {
+  Genshin = 2,
+  StarRail = 6,
+}
+```
+
 # 推荐vscode插件 Document This
 
 选中方法，按两下Ctrl+Alt+D触发
