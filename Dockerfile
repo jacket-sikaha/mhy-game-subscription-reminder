@@ -2,6 +2,7 @@
 FROM node:alpine as builder
 WORKDIR /project
 
+RUN cat .env
 
 # 安装 pnpm
 RUN npm install -g pnpm
