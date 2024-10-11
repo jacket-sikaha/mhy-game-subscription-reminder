@@ -29,6 +29,10 @@ jobs:
           pwd
           ls -la
 
+      - name: Print Environment Variables
+        run: |
+          cat .\.env
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
