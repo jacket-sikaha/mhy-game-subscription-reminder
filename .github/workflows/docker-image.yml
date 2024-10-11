@@ -54,8 +54,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }} # 这里应该产出正确的标签格式，如 "ghcr.io/your_username/chat-by-websocket:main"
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            ENV_FILE=./.env
+          
 
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v1
