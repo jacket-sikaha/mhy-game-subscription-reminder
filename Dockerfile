@@ -1,6 +1,11 @@
 # Stage 1: 使用官方 Node.js 作为构建环境
 FROM node:alpine as builder
 WORKDIR /project
+# 复制 .env 文件到容器内部
+COPY .env /project/
+
+# 设置环境变量
+ENV $(cat /project/.env | xargs)
 
 # 安装 pnpm
 RUN npm install -g pnpm
