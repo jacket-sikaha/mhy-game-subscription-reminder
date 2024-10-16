@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Post, PostApiResponse } from './interfaces/post-data';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { getShanghaiDate } from 'src/util/utils';
 import { OcrService } from 'src/ocr/ocr.service';
 
@@ -35,13 +35,21 @@ export class MhyService {
     return target;
   }
 
-  async isRecentPreviewBroadcast(target: Post) {
+  /**
+   *
+   * 判断现在时间是否在 发版帖子日期推断的直播时间或ocr所得的直播时间 之前
+   * @param {number} post_created_at
+   * @param {Dayjs} [accurateTimeBYOcr]
+   * @return {*}
+   * @memberof MhyService
+   */
+  async isRecentPreviewBroadcast(
+    post_created_at: number,
+    accurateTimeBYOcr?: Dayjs,
+  ) {
     try {
-      const postTime = dayjs.unix(target.created_at);
-      const accurateLiveTime = await this.isThereAnyMoreAccurateTimeBYOcr(
-        target.cover,
-      );
-      const liveTime = accurateLiveTime ?? postTime.add(3, 'day');
+      const postTime = dayjs.unix(post_created_at);
+      const liveTime = accurateTimeBYOcr ?? postTime.add(3, 'day');
       const current = getShanghaiDate();
       return (
         current.isSame(liveTime, 'day') || current.isBefore(liveTime, 'day')
@@ -50,8 +58,8 @@ export class MhyService {
       return false;
     }
   }
-
-  async isThereAnyMoreAccurateTimeBYOcr(postCover: string) {
+  async getAccurateTimeBYOcr(postCover?: string) {
+    if (!postCover) return undefined;
     const res = await this.ocrService.parseImageURLByBD(postCover);
     if (!res) return undefined;
 

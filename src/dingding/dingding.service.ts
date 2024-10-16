@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import crypto from 'crypto';
 import { Post } from 'src/mhy/interfaces/post-data';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { MhyService } from 'src/mhy/mhy.service';
 import {
   MsgBody,
@@ -30,8 +30,17 @@ export class DingdingService {
     }
     const post = this.mhyService.getPreviewBroadcastData(data);
     let body: MsgBody;
-    if (post && (await this.mhyService.isRecentPreviewBroadcast(post))) {
-      body = this.prepareMsgBodyByMarddown(post);
+    const accurateLiveTime = await this.mhyService.getAccurateTimeBYOcr(
+      post?.cover,
+    );
+    if (
+      post &&
+      (await this.mhyService.isRecentPreviewBroadcast(
+        post.created_at,
+        accurateLiveTime,
+      ))
+    ) {
+      body = this.prepareMsgBodyByMarddown(post, accurateLiveTime);
     } else {
       body = this.prepareMsgBodyByMarddown(data);
     }
@@ -52,7 +61,7 @@ export class DingdingService {
     return Promise.reject(msgResponsive);
   }
 
-  prepareMsgBodyByMarddown(data: Post | Post[]): MsgBody {
+  prepareMsgBodyByMarddown(data: Post | Post[], ocrEndDate?: Dayjs): MsgBody {
     if (Array.isArray(data)) {
       const content = data.map(({ subject }) => `- ${subject}`).join('\n');
       return {
@@ -78,10 +87,9 @@ export class DingdingService {
     }, '');
 
     const postDate = dayjs.unix(created_at).format('YYYY-MM-DD HH:mm:ss');
-    const endDate = dayjs
-      .unix(created_at)
-      .add(3, 'day')
-      .format('YYYY-MM-DD HH:mm:ss');
+    const endDate = (ocrEndDate ?? dayjs.unix(created_at).add(3, 'day')).format(
+      'YYYY-MM-DD HH:mm:ss',
+    );
     return {
       msgtype: 'markdown',
       markdown: {
