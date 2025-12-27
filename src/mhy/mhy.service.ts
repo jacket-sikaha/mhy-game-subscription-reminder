@@ -3,6 +3,7 @@ import { Post, PostApiResponse } from './interfaces/post-data';
 import dayjs, { Dayjs } from 'dayjs';
 import { getShanghaiDate } from 'src/util/utils';
 import { OcrService } from 'src/ocr/ocr.service';
+import { postTemplate } from 'src/util';
 
 @Injectable()
 export class MhyService {
@@ -23,6 +24,14 @@ export class MhyService {
   async getTheLatestPostOnTheOfficialAccountOfStarRail() {
     const res = await fetch(
       'https://bbs-api.miyoushe.com/post/wapi/userPost?size=20&uid=288909600',
+    );
+    const data: PostApiResponse = await res.json();
+    return data.data.list.map(({ post }) => post);
+  }
+
+  async getTheLatestPostZZZ() {
+    const res = await fetch(
+      'https://bbs-api.miyoushe.com/post/wapi/userPost?size=20&uid=152039148',
     );
     const data: PostApiResponse = await res.json();
     return data.data.list.map(({ post }) => post);
@@ -93,4 +102,52 @@ export class MhyService {
   //   }
   //   return this.dingdingService.prepareMsgBodyByMarddown(post, false);
   // }
+
+  async sendMarkdownMsg(): Promise<
+    { title: string; text: string; haveLive?: boolean } | undefined
+  > {
+    const data = (await this.getTheLatestPostZZZ()).map((item) => {
+      return {
+        id: item.post_id,
+        title: item.subject,
+        content: item.content,
+        image: item.images?.[0] || '',
+        createTime: dayjs(Number(item.created_at)).format(
+          'YYYY-MM-DD HH:mm:ss',
+        ),
+      };
+    });
+    const livePost = data.find((item) =>
+      item.title.includes('前瞻特别节目预告'),
+    );
+    const liveTimeStr = livePost?.content
+      .replace(/\s/g, '')
+      .match(/\d{1,2}月\d{1,2}日\d{1,2}:\d{1,2}/)?.[0];
+    const postYear = dayjs(livePost?.createTime).year();
+    const liveTime = dayjs(liveTimeStr, 'M D HH:mm', 'zh-cn')
+      .year(postYear)
+      .format('YYYY-MM-DD HH:mm');
+    const isBeforeLiveTime = dayjs().isBefore(dayjs(liveTime));
+    const isSameDay = dayjs().isSame(dayjs(liveTime), 'day');
+    const isBeforeOrSameDay = isBeforeLiveTime || isSameDay;
+
+    if (!livePost || !liveTime || !isBeforeOrSameDay) {
+      return {
+        title: `官方帖子消息`,
+        text: `## 最新几条官方帖子消息  
+          ${data.map((item) => postTemplate(item.title, '', item.createTime, item.image)).join('')}
+          `,
+      };
+    }
+    return {
+      title: `${livePost.title}`,
+      text: `
+        ${postTemplate(livePost.title, livePost.content, livePost.createTime, livePost.image)}
+  
+        - 大概开始时间：${liveTime}
+        - **记得使用兑换码！！！！！！**
+        `,
+      haveLive: true,
+    };
+  }
 }

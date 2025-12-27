@@ -48,10 +48,8 @@ export class WutheringWavesService {
     const liveTime = dayjs(liveTimeStr, 'YYYY M D HH:mm', 'zh-cn').format(
       'YYYY-MM-DD HH:mm',
     );
-    const isBeforeLiveTime = dayjs('2025-12-12 19:00').isBefore(
-      dayjs(liveTime),
-    );
-    const isSameDay = dayjs('2025-12-12 19:00').isSame(dayjs(liveTime), 'day');
+    const isBeforeLiveTime = dayjs().isBefore(dayjs(liveTime));
+    const isSameDay = dayjs().isSame(dayjs(liveTime), 'day');
     const isBeforeOrSameDay = isBeforeLiveTime || isSameDay;
 
     if (!livePost || !liveTime || !isBeforeOrSameDay) {

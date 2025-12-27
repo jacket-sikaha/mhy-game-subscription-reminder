@@ -143,7 +143,10 @@ export class DingdingService {
 
   async sendWutheringWavesMsg() {
     const markdown = await this.wutheringWavesService.sendMarkdownMsg();
-    console.log('markdown', markdown);
+    await this.sendMarkdownMsg(markdown, markdown?.haveLive);
+  }
+  async sendZZZMsg() {
+    const markdown = await this.mhyService.sendMarkdownMsg();
     await this.sendMarkdownMsg(markdown, markdown?.haveLive);
   }
 }
