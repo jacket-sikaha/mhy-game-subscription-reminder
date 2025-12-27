@@ -21,7 +21,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "module": "npx @nestjs/cli@latest g module",
     "controller": "npx @nestjs/cli@latest g controller",
-    "service": "npx @nestjs/cli@latest g service"
+    "service": "npx @nestjs/cli@latest g service",
+    "gen": "node generate.js"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
