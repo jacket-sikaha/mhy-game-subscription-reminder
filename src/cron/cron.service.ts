@@ -12,7 +12,6 @@ export class CronService {
   //   注入 SchedulerRegistry
   constructor(
     private schedulerRegistry: SchedulerRegistry,
-    private mhyService: MhyService,
     private dingdingService: DingdingService,
   ) {}
 
@@ -43,11 +42,12 @@ export class CronService {
   addCronJob(name: string, cronTime: string) {
     const job = new CronJob(cronTime, async () => {
       try {
-        const result = await Promise.all(
-          [GameType.Genshin, GameType.StarRail].map((item) =>
+        const result = await Promise.all([
+          ...[GameType.Genshin, GameType.StarRail].map((item) =>
             this.dingdingService.sendDiyGroupMsg(item),
           ),
-        );
+          this.dingdingService.sendWutheringWavesMsg(),
+        ]);
         console.log('result', result);
       } catch (error) {
         console.error(error);
@@ -59,6 +59,7 @@ export class CronService {
     this.logger.warn(`job ${name} added for ${cronTime} !`);
   }
 
+  // 重新启动已存在但被停止的cron任务
   startCron() {
     const job = this.schedulerRegistry.getCronJob('activity');
     job.start();

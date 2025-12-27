@@ -9,10 +9,14 @@ import {
   StructuredContent,
 } from './interfaces/msg-body';
 import { GameType } from 'src/mhy/interfaces/game-type';
+import { WutheringWavesService } from 'src/wuthering-waves/wuthering-waves.service';
 
 @Injectable()
 export class DingdingService {
-  constructor(private mhyService: MhyService) {}
+  constructor(
+    private mhyService: MhyService,
+    private wutheringWavesService: WutheringWavesService,
+  ) {}
 
   async sendDiyGroupMsg(type: GameType) {
     let data: Post[];
@@ -44,7 +48,7 @@ export class DingdingService {
     } else {
       body = this.prepareMsgBodyByMarddown(data);
     }
-    const { sign, timestamp } = this.getSign();
+    const { sign, timestamp } = this.getServiceSign();
     const res = await fetch(
       `https://oapi.dingtalk.com/robot/send?access_token=${'dee451641816c0729c6d76b407010b3bf29baf1fe193fb9b0e570632458e0af8'}&timestamp=${timestamp}&sign=${sign}`,
       {
@@ -100,7 +104,7 @@ export class DingdingService {
     };
   }
 
-  getSign() {
+  getServiceSign() {
     const timestamp = Date.now();
     const secret =
       'SECa8bdd79c83aeb0931aa9340ef4993d61a1f08d6afdc6059aa53a8d80aade03a0';
@@ -109,5 +113,37 @@ export class DingdingService {
     hmac.update(stringToSign, 'utf-8');
     const sign = hmac.digest('base64');
     return { sign, timestamp };
+  }
+
+  async sendMarkdownMsg(
+    markdown: MsgBody['markdown'],
+    needAtAll: boolean = false,
+  ) {
+    const { sign, timestamp } = this.getServiceSign();
+    const body: MsgBody = {
+      msgtype: 'markdown',
+      markdown,
+      at: { isAtAll: needAtAll },
+    };
+    const res = await fetch(
+      `https://oapi.dingtalk.com/robot/send?access_token=${'dee451641816c0729c6d76b407010b3bf29baf1fe193fb9b0e570632458e0af8'}&timestamp=${timestamp}&sign=${sign}`,
+      {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+
+    const msgResponsive: MsgResponsive = await res.json();
+    if (msgResponsive.errcode === '0' || msgResponsive.errmsg === 'ok') {
+      return msgResponsive;
+    }
+    return Promise.reject(msgResponsive);
+  }
+
+  async sendWutheringWavesMsg() {
+    const markdown = await this.wutheringWavesService.sendMarkdownMsg();
+    console.log('markdown', markdown);
+    await this.sendMarkdownMsg(markdown, markdown?.haveLive);
   }
 }

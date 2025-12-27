@@ -18,4 +18,15 @@ export class DingdingController {
       return { error };
     }
   }
+
+  @Post('mc-msg')
+  async sendMarkdownMsgByType() {
+    try {
+      await this.dingdingService.sendWutheringWavesMsg();
+      return { result: 'success' };
+    } catch (error) {
+      console.error(error);
+      return { error };
+    }
+  }
 }

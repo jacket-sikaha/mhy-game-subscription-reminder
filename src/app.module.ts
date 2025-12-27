@@ -8,6 +8,7 @@ import { CronModule } from './cron/cron.module';
 import { DingdingModule } from './dingding/dingding.module';
 import { OcrModule } from './ocr/ocr.module';
 import { ConfigModule } from '@nestjs/config';
+import { WutheringWavesModule } from './wuthering-waves/wuthering-waves.module';
 
 @Module({
   // 激活作业调度
@@ -23,6 +24,7 @@ import { ConfigModule } from '@nestjs/config';
     CronModule,
     DingdingModule,
     OcrModule,
+    WutheringWavesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
