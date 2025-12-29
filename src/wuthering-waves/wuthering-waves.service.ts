@@ -52,7 +52,7 @@ export class WutheringWavesService {
     const isSameDay = dayjs().isSame(dayjs(liveTime), 'day');
     const isBeforeOrSameDay = isBeforeLiveTime || isSameDay;
 
-    if (!livePost || !liveTime || !isBeforeOrSameDay) {
+    if (!livePost || !liveTimeStr || !isBeforeOrSameDay) {
       return {
         title: `官方帖子消息`,
         text: `## 最新几条官方帖子消息  
@@ -65,8 +65,8 @@ export class WutheringWavesService {
       text: `
       ${postTemplate(livePost.title, livePost.content, livePost.createTime, livePost.image)}
 
-      - 大概开始时间：${liveTime}
-      - **记得使用兑换码！！！！！！**
+- 大概开始时间：${liveTime}
+- **记得使用兑换码！！！！！！**
       `,
       haveLive: true,
     };

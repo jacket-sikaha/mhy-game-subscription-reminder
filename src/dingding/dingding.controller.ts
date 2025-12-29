@@ -29,4 +29,15 @@ export class DingdingController {
       return { error };
     }
   }
+
+  @Post('zzz-msg')
+  async sendZZZMarkdownMsgByType() {
+    try {
+      await this.dingdingService.sendZZZMsg();
+      return { result: 'success' };
+    } catch (error) {
+      console.error(error);
+      return { error };
+    }
+  }
 }

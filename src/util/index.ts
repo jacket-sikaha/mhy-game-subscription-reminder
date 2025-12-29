@@ -21,7 +21,7 @@ export const postTemplate = (
 #### ${title}
 ${banner ? `![${title}](${banner})` : ''}
 - 发帖时间：${createTime}
-${content}
-------
 
+${content}\n
+------\n
 `;

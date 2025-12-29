@@ -47,6 +47,7 @@ export class CronService {
             this.dingdingService.sendDiyGroupMsg(item),
           ),
           this.dingdingService.sendWutheringWavesMsg(),
+          this.dingdingService.sendZZZMsg(),
         ]);
         console.log('result', result);
       } catch (error) {
